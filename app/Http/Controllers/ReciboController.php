@@ -68,6 +68,7 @@ class ReciboController extends Controller{
         $vencimiento = $request->input('vencimiento');
         $monto_cheque = $request->input('monto_cheque');
         $nro_cuenta = $request->input('nro_cuenta');
+        $banco = $request->input('banco');
         $id_recibo = $request->input('id_recibo');
 
         $detalle_recibo = new DetalleRecibo();
@@ -76,6 +77,7 @@ class ReciboController extends Controller{
         $detalle_recibo->vencimiento = $vencimiento;
         $detalle_recibo->monto_cheque = $monto_cheque;
         $detalle_recibo->nro_cuenta = $nro_cuenta;
+        $detalle_recibo->banco = $banco;
         $detalle_recibo->id_recibo = $id_recibo;
 
         $detalle_recibo->save();
@@ -103,13 +105,10 @@ class ReciboController extends Controller{
 
         $recibo = Recibo::find($id_recibo);
 
-
         $html = view('recibos.docrecibo', compact('id_recibo','concepto','cantidad','detalle_recibo','recibo'))->render();
-
-        //dd($html);
-        //echo '<img src="'.$_SERVER["DOCUMENT_ROOT"].'/logo.png'.'">';
-        //die;
+        //return view('recibos.docrecibo', compact('id_recibo', 'concepto', 'cantidad', 'detalle_recibo', 'recibo'));
         $pdf = app('dompdf.wrapper');
+        $pdf->setPaper([0, 0, 860.98, 680.85], 'landscape');
         $pdf->loadHTML($html);
 
         return $pdf->stream('folio.pdf');

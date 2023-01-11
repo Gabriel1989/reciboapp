@@ -50,45 +50,61 @@ if(trim($recibo->imagen_recibo) != ""){
 </div>
 </form>
 @endif
+<div>
+<?php
+$nro_cuenta = '';
+$monto_cheque = 0;
+?>
 <!--<div class="row">-->
     <!--<div class="col-md-4">-->
     <table id="table_detalle_recibo" style="min-width:1000px;">
         <thead>
             <tr>
-            <th>N° Cheque</th>
-            <th>Detalle</th>
-            <th>Vencimiento</th>
-            <th>Monto Cheque</th>
-            <th>N° Cuenta</th>
-            <th></th>
+            <th style="width: 125px;">N° Cheque</th>
+            <th style="width: 125px;">Detalle</th>
+            <th style="width: 125px;">Vencimiento</th>
+            <th style="width: 125px;">Monto Cheque</th>
+            <th style="width: 125px;">N° Cuenta</th>
+            <th style="width: 125px;">Banco</th>
+            <th style="width: 125px;"></th>
             </tr>
         </thead>
         <tbody id="tbody_detalle_recibo">
 
     @foreach($detalle_recibo as $detalle)
+    <?php 
+    $nro_cuenta =  $detalle->nro_cuenta; 
+    $monto_cheque = $detalle->monto_cheque;
+    ?>
     <tr class='trDetalle' data-id='<?php echo $detalle->id; ?>'>
-        <td>{{$detalle->nro_cheque}}</td>
-        <td>{{$detalle->detalle}}</td>
-        <td>{{$detalle->vencimiento}}</td>
-        <td>{{$detalle->monto_cheque}}</td>
-        <td>{{$detalle->nro_cuenta}}</td>
-        <td>@if(!$cierra_recibo) <button class='btn btn-danger btnborrarDetalle' data-id='<?php echo $detalle->id; ?>'><i class='fa fa-trash'></i></button> @endif</td>
+        <td style="width: 125px;">{{$detalle->nro_cheque}}</td>
+        <td style="width: 125px;">{{$detalle->detalle}}</td>
+        <td style="width: 125px;">{{$detalle->vencimiento}}</td>
+        <td style="width: 125px;">{{$detalle->monto_cheque}}</td>
+        <td style="width: 125px;">{{$detalle->nro_cuenta}}</td>
+        <td style="width: 125px;">{{$detalle->banco}}</td>
+        <td style="width: 125px;">@if(!$cierra_recibo) <button class='btn btn-danger btnborrarDetalle' data-id='<?php echo $detalle->id; ?>'><i class='fa fa-trash'></i></button> @endif</td>
     </tr>
 
     @endforeach
 
-    @if(!$cierra_recibo)
-    <tr>
-        <td><input type="text" id="txtNumCheque"></td>
-        <td><input type="text" id="txtDetalle"></td>
-        <td><input type="text" id="txtVencimiento"></td>
-        <td><input type="number" id="txtMontoCheque"></td>
-        <td><input type="number" id="txtNroCuenta"></td>
-        <td><button class="btn btn-success btnAgregaDetalle"><i class="fa fa-plus"></i></button></td>
-    </tr>
-    @endif
+    
         </tbody>    
     </table>
+    <table style="min-width:902px;">
+        @if(!$cierra_recibo)
+            <tr>
+                <td><input type="text" id="txtNumCheque" style="width: 125px;"></td>
+                <td><input type="text" id="txtDetalle" style="width: 125px;"></td>
+                <td><input type="text" id="txtVencimiento" style="width: 125px;"></td>
+                <td><input type="number" id="txtMontoCheque" style="width: 125px;"data-montoanterior="{{$monto_cheque}}"></td>
+                <td><input type="number" id="txtNroCuenta" style="width: 125px;" value="{{$nro_cuenta}}"></td>
+                <td><input type="text" id="txtBanco" style="width: 125px;"></td>
+                <td><button class="btn btn-success btnAgregaDetalle"><i class="fa fa-plus"></i></button></td>
+            </tr>
+        @endif
+    </table>
+</div>    
     <!--</div>-->
 <!--</div>-->   
 <br>
@@ -131,22 +147,18 @@ $(document).ready(function(){
     $(".trDetalle").each(function(){
         varPesos += parseFloat($(this).find('td:eq(3)').text());
     });
-
     var pesos = numeroALetras(varPesos, {
         plural: "PESOS",
         singular: "PESO",
         centPlural: "CENTAVOS",
         centSingular: "CENTAVO"
     });
-
     $("#cantidad").val("$"+number_format(varPesos,0,",",".") + " (" +pesos+ ")" );
 });
 
 
 $(document).on("click",".btnborrarDetalle",function(){
-
     let id = $(this).data('id');
-
     $.ajax({
         url: "{{ route('detalleRecibo.borrar')}}",
         data: {
@@ -158,10 +170,28 @@ $(document).on("click",".btnborrarDetalle",function(){
             $(".trDetalle[data-id='"+id+"']").remove();
 
             let varPesos = 0;
+            let cantidadCheques = 0;
+            let montoAnterior = 0;
 
             $(".trDetalle").each(function(){
                 varPesos += parseFloat($(this).find('td:eq(3)').text());
+
+                if(montoAnterior > parseFloat($(this).find('td:eq(3)').text())){
+                    montoAnterior = parseFloat($(this).find('td:eq(3)').text());
+                }
+                montoAnterior = parseFloat($(this).find('td:eq(3)').text());
+                cantidadCheques++;
             });
+
+            if(parseFloat(cantidadCheques) == 0){
+                $("#txtMontoCheque").attr('data-montoanterior',0);
+                $("#txtMontoCheque").data('montoanterior',0);
+            }
+            else{
+                $("#txtMontoCheque").attr('data-montoanterior',montoAnterior);
+                $("#txtMontoCheque").data('montoanterior',montoAnterior);
+            }
+            
 
             var pesos = numeroALetras(varPesos, {
                 plural: "PESOS",
@@ -173,10 +203,25 @@ $(document).on("click",".btnborrarDetalle",function(){
             $("#cantidad").val("$"+number_format(varPesos,0,",",".") + " (" +pesos+ ")" );
         }
     })
-
 });
 
 $(document).on("click",".btnAgregaDetalle",function(){
+
+    let monto_cheque_ultimo = $("#txtMontoCheque").data('montoanterior');
+    console.log(monto_cheque_ultimo);
+    console.log($("#txtMontoCheque").val());
+    if(parseFloat(monto_cheque_ultimo) > 0){
+        if(parseFloat($("#txtMontoCheque").val()) > parseFloat(monto_cheque_ultimo))
+        {
+            Swal.fire(
+            '¡Error!',
+            'El monto del cheque ingresado no puede ser mayor al que fue ingresado anteriormente',
+            'error'
+            )   
+            return;
+        }
+    }
+
 
     $.ajax({
         url: "{{ route('detalleRecibo.insertar') }}",
@@ -187,6 +232,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             vencimiento : $("#txtVencimiento").val(),
             monto_cheque: $("#txtMontoCheque").val(),
             nro_cuenta : $("#txtNroCuenta").val(),
+            banco: $("#txtBanco").val(),
             id_recibo: "{{$recibo->id}}",
             _token: "{{csrf_token()}}"
         },
@@ -200,20 +246,25 @@ $(document).on("click",".btnAgregaDetalle",function(){
             }
             else{
                 let html = "<tr class='trDetalle' data-id='"+data+"'>"+
-                "<td>"+$("#txtNumCheque").val()+"</td>"+
-                "<td>"+$("#txtDetalle").val()+"</td>"+
-                "<td>"+$("#txtVencimiento").val()+"</td>"+
-                "<td>"+$("#txtMontoCheque").val()+"</td>"+
-                "<td>"+$("#txtNroCuenta").val()+"</td>"+
-                "<td><button class='btn btn-danger btnborrarDetalle' data-id='"+data+"'><i class='fa fa-trash'></i></button>"+"</td>"+
+                "<td style='width: 125px;'>"+$("#txtNumCheque").val()+"</td>"+
+                "<td style='width: 125px;'>"+$("#txtDetalle").val()+"</td>"+
+                "<td style='width: 125px;'>"+$("#txtVencimiento").val()+"</td>"+
+                "<td style='width: 125px;'>"+$("#txtMontoCheque").val()+"</td>"+
+                "<td style='width: 125px;'>"+$("#txtNroCuenta").val()+"</td>"+
+                "<td style='width: 125px;'>"+$("#txtBanco").val()+"</td>"+
+                "<td style='width: 125px;'><button class='btn btn-danger btnborrarDetalle' data-id='"+data+"'><i class='fa fa-trash'></i></button>"+"</td>"+
                 "</tr>";
                 $("#txtNumCheque").val('');
                 $("#txtDetalle").val('');
                 $("#txtVencimiento").val('');
-                $("#txtMontoCheque").val('');
-                $("#txtNroCuenta").val('');
+                $("#txtMontoCheque").attr('data-montoanterior',$("#txtMontoCheque").val());
+                $("#txtMontoCheque").data('montoanterior',$("#txtMontoCheque").val());
+                console.log("nuevo monto: "+$("#txtMontoCheque").data('montoanterior'));
+                $("#txtMontoCheque").val('');               
+                //$("#txtNroCuenta").val('');
+                $("#txtBanco").val('');
 
-                $("#tbody_detalle_recibo").prepend(html);
+                $("#tbody_detalle_recibo").append(html);
 
                 let varPesos = 0;
 
@@ -233,13 +284,25 @@ $(document).on("click",".btnAgregaDetalle",function(){
             }
         }
     });
-
-
 });
 
-
 $(document).on("click",".btnGeneraComprobante",function(){
-    
+
+    let cantidadCheques = 0;
+    $(".trDetalle").each(function(){
+        cantidadCheques++;
+    });
+
+    if(parseFloat(cantidadCheques) == 0){
+        Swal.fire(
+            '¡Error!',
+            'Debe ingresar al menos un registro de pago al recibo',
+            'error'
+        )  
+        return;
+    }
+
+
     if($("#concepto").val().trim() == ""){
         Swal.fire(
             '¡Error!',
@@ -248,6 +311,7 @@ $(document).on("click",".btnGeneraComprobante",function(){
         )  
         return;
     }
+
 
     $.ajax({
         url: "{{ route('generaComprobanteRecibo')}}",
@@ -276,13 +340,8 @@ $(document).on("click",".btnGeneraComprobante",function(){
         },complete: function(){
             $('.ajax-loader').css("visibility", "hidden");
         }
-
-
     })
-    
-
 });
-
 
 $(document).on("submit","#formDocRecep",function(e){
     e.preventDefault();
@@ -317,18 +376,16 @@ $(document).on("submit","#formDocRecep",function(e){
 });
 
 number_format = function (number, decimals, dec_point, thousands_sep) {
-        number = number.toFixed(decimals);
+    number = number.toFixed(decimals);
+    var nstr = number.toString();
+    nstr += '';
+    x = nstr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? dec_point + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1))
+        x1 = x1.replace(rgx, '$1' + thousands_sep + '$2');
 
-        var nstr = number.toString();
-        nstr += '';
-        x = nstr.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? dec_point + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-
-        while (rgx.test(x1))
-            x1 = x1.replace(rgx, '$1' + thousands_sep + '$2');
-
-        return x1 + x2;
+    return x1 + x2;
 }
 </script>

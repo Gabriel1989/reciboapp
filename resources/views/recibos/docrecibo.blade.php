@@ -38,7 +38,7 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
 <br>
 <div class="form-group" style="border: 1px solid #000;">
     <label for="recibeDe">La cantidad de:</label>
-    {{$cantidad}}
+    <?php echo count($detalle_recibo). ' CHEQUE(S) POR LA SUMA DE ';  ?> {{$cantidad}}
 </div>
 <br>
 <div class="form-group" style="border: 1px solid #000;">
@@ -64,6 +64,7 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
             <th>Vencimiento</th>
             <th>Monto Cheque</th>
             <th>N° Cuenta</th>
+            <th>Banco</th>
             </tr>
         </thead>
         <tbody id="tbody_detalle_recibo">
@@ -81,8 +82,9 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
                 <td>{{$detalle->nro_cheque}}</td>
                 <td>{{$detalle->detalle}}</td>
                 <td>{{$detalle->vencimiento}}</td>
-                <td>{{$detalle->monto_cheque}}</td>
+                <td>${{$detalle->monto_cheque}}</td>
                 <td>{{$detalle->nro_cuenta}}</td>
+                <td>{{$detalle->banco}}</td>
             </tr>
             @endforeach
         </tbody>    
@@ -103,6 +105,7 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
             <th>Vencimiento</th>
             <th>Monto Cheque</th>
             <th>N° Cuenta</th>
+            <th>Banco</th>
             </tr>
         </thead>
         <tbody id="tbody_detalle_recibo">
@@ -123,11 +126,24 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
                 <td>{{$detalle->vencimiento}}</td>
                 <td>{{$detalle->monto_cheque}}</td>
                 <td>{{$detalle->nro_cuenta}}</td>
+                <td>{{$detalle->banco}}</td>
             </tr>
             <?php $i++;  ?>
             @endforeach
         </tbody>    
     </table>
+
+    <div style="position:absolute;top:350;left:470;border: 3px solid #000;">
+        <span style="text-align:center;margin-left:15px;font-weight:bold;font-size:20px;">ACOBRO LTDA.</span>
+        <br>
+        <span style="font-size:9px;text-align:center;margin-left:15px;font-weight:bold;">MERCED 280, PISO 6 SANTIAGO</span>
+        <br>
+        <span style="border: 2px solid #000;text-align:center;margin-left:15px;padding:0px 15px 0px 15px;font-weight:bold;font-size:20px;">{{date("d-m-Y")}}</span>
+        <br>
+        <span style="font-size:26px;text-align:center;margin-left:15px;font-weight:bold;">RECIBIDO</span>
+    </div>
+
+
     <div style="float:left;position:absolute;top:700;">
         
         <img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('http://'.$_SERVER['HTTP_HOST'].'/recibo/detalleRecibo/'.$recibo->id)) }} ">
@@ -143,6 +159,18 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
         www.acobro.cl
     </div>
 @else
+
+    <div style="position:absolute;top:350;left:470;border: 3px solid #000;">
+        <span style="text-align:center;margin-left:15px;font-weight:bold;font-size:20px;">ACOBRO LTDA.</span>
+        <br>
+        <span style="font-size:9px;text-align:center;margin-left:15px;font-weight:bold;">MERCED 280, PISO 6 SANTIAGO</span>
+        <br>
+        <span style="border: 2px solid #000;text-align:center;margin-left:15px;padding:0px 15px 0px 15px;font-weight:bold;font-size:20px;">{{date("d-m-Y")}}</span>
+        <br>
+        <span style="font-size:26px;text-align:center;margin-left:15px;font-weight:bold;">RECIBIDO</span>
+    </div>
+
+
 
     <div style="float:left;position:absolute;top:700;">
         <img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('http://'.$_SERVER['HTTP_HOST'].'/recibo/detalleRecibo/'.$recibo->id)) }} ">
