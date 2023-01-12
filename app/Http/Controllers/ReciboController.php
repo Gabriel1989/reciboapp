@@ -137,4 +137,27 @@ class ReciboController extends Controller{
         }
 
     }
+
+    public function editDetalle(Request $request){
+        $detalle_id = $request->input('detalle_id');
+        $recibo_id = $request->input('recibo_id');
+        $num_cheque = $request->input('num_cheque');
+        $detalle = $request->input('txtdetalle');
+        $vencimiento = $request->input('vencimiento');
+        $monto_cheque = $request->input('monto_cheque');
+        $nro_cuenta = $request->input('num_cuenta');
+        $banco = $request->input('banco');
+
+        $detalle_recibo = DetalleRecibo::find($detalle_id);
+
+        $detalle_recibo->nro_cheque = $num_cheque;
+        $detalle_recibo->detalle = $detalle;
+        $detalle_recibo->vencimiento = $vencimiento;
+        $detalle_recibo->monto_cheque = $monto_cheque;
+        $detalle_recibo->nro_cuenta = $nro_cuenta;
+        $detalle_recibo->banco = $banco;
+
+        $detalle_recibo->save();
+        return $detalle_recibo->id;
+    }
 }

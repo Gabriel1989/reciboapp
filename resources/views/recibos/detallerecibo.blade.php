@@ -42,7 +42,7 @@ if(trim($recibo->imagen_recibo) != ""){
 <form id="formDocRecep">
 <div class="form-group">
     <label for="fileImgRecibo">Carga Documento Recepcionado</label>
-    <input type="file" class="form-control-file" name="fileImgRecibo" id="fileImgRecibo" accept=".png,.jpg,.jpeg">
+    <input type="file" class="form-control-file" name="fileImgRecibo" id="fileImgRecibo" accept=".png,.jpg,.jpeg" style="width:inherit;">
     <input type="hidden" name="id_recibo" value="{{$recibo->id}}">
 </div>
 <div class="form-group">
@@ -76,19 +76,18 @@ $monto_cheque = 0;
     $nro_cuenta =  $detalle->nro_cuenta; 
     $monto_cheque = $detalle->monto_cheque;
     ?>
-    <tr class='trDetalle' data-id='<?php echo $detalle->id; ?>'>
-        <td style="width: 125px;">{{$detalle->nro_cheque}}</td>
-        <td style="width: 125px;">{{$detalle->detalle}}</td>
-        <td style="width: 125px;">{{$detalle->vencimiento}}</td>
-        <td style="width: 125px;">{{$detalle->monto_cheque}}</td>
-        <td style="width: 125px;">{{$detalle->nro_cuenta}}</td>
-        <td style="width: 125px;">{{$detalle->banco}}</td>
-        <td style="width: 125px;">@if(!$cierra_recibo) <button class='btn btn-danger btnborrarDetalle' data-id='<?php echo $detalle->id; ?>'><i class='fa fa-trash'></i></button> @endif</td>
+    <tr class='trDetalle' id="detalle_recibo_{{$recibo->id}}_{{$detalle->id}}" data-id='<?php echo $detalle->id; ?>'>
+        <td style="width: 125px;"><span id="spanNumCheque_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->nro_cheque}}</span> <input style="display:none;width: 125px;" id="txtNumCheque_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="text" value="{{$detalle->nro_cheque}}"></td>
+        <td style="width: 125px;"><span id="spanDetalle_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->detalle}}</span> <input style="display:none;width: 125px;" id="txtDetalle_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="text" value="{{$detalle->detalle}}"></td>
+        <td style="width: 125px;"><span id="spanVencimiento_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->vencimiento}}</span> <input style="display:none;width: 125px;" id="txtVencimiento_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}} inputEditVencimiento" type="text" value="{{$detalle->vencimiento}}"></td>
+        <td style="width: 125px;"><span id="spanMontoCheque_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->monto_cheque}}</span> <input style="display:none;width: 125px;" id="txtMontoCheque_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="number" value="{{$detalle->monto_cheque}}"></td>
+        <td style="width: 125px;"><span id="spanNroCuenta_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->nro_cuenta}}</span> <input style="display:none;width: 125px;" id="txtNroCuenta_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="number" value="{{$detalle->nro_cuenta}}"></td>
+        <td style="width: 125px;"><span id="spanBanco_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->banco}}</span> <input style="display:none;width: 125px;" id="txtBanco_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="text" value="{{$detalle->banco}}"></td>
+        <td style="width: 125px;">@if(!$cierra_recibo) <button class='btn btn-danger btnborrarDetalle' data-id='<?php echo $detalle->id; ?>'><i class='fa fa-trash'></i></button> 
+            <button class="btn btn-primary btnEditarDetalle" data-detalle="{{$detalle->id}}" data-recibo="{{$recibo->id}}"><i class="fa fa-pencil"></i></button> @endif</td>
     </tr>
 
     @endforeach
-
-    
         </tbody>    
     </table>
     <table style="min-width:902px;">
@@ -137,7 +136,7 @@ $(document).ready(function(){
 
     $.datepicker.setDefaults($.datepicker.regional['es']);
 
-    $("#txtVencimiento").datepicker({
+    $("#txtVencimiento,.inputEditVencimiento").datepicker({
         language: 'es',
         dateFormat: 'yy-mm-dd',
     });
@@ -205,17 +204,160 @@ $(document).on("click",".btnborrarDetalle",function(){
     })
 });
 
+$(document).on("click",".btnEditarDetalle",function(){
+
+    let montoAnterior = 0;
+    $(".trDetalle").each(function(){
+                
+        if(montoAnterior > parseFloat($(this).find('td:eq(3)').text())){
+            montoAnterior = parseFloat($(this).find('td:eq(3)').text());
+        }
+        montoAnterior = parseFloat($(this).find('td:eq(3)').text());
+                
+    });
+    let detalle_id = $(this).data('detalle');
+    let recibo_id = $(this).data('recibo');
+    $(".txtDetalleRecibo_"+recibo_id+"_"+detalle_id).fadeToggle();
+    $(".inputDetalle_"+recibo_id+"_"+detalle_id).fadeToggle();
+
+    $(this).toggleClass('btnEditarExecute');
+
+});
+
+$(document).on("click",".btnEditarExecute",function(){
+    let detalle = $(this).data('detalle');
+    let recibo = $(this).data('recibo');
+
+    let num_cheque = $("#txtNumCheque_"+recibo+"_"+detalle).val();
+    let txtdetalle = $("#txtDetalle_"+recibo+"_"+detalle).val();
+    let vencimiento = $("#txtVencimiento_"+recibo+"_"+detalle).val();
+    let monto_cheque = $("#txtMontoCheque_"+recibo+"_"+detalle).val();
+    let num_cuenta = $("#txtNroCuenta_"+recibo+"_"+detalle).val();
+    let banco = $("#txtBanco_"+recibo+"_"+detalle).val();
+
+    $.ajax({
+        url: "{{ route('editarDetalleCheque') }}",
+        data: {
+            detalle_id : detalle,
+            recibo_id : recibo,
+            num_cheque : num_cheque,
+            txtdetalle : txtdetalle,
+            vencimiento : vencimiento,
+            monto_cheque : monto_cheque,
+            num_cuenta : num_cuenta,
+            banco : banco,
+            _token : "{{csrf_token()}}"
+        },
+        type: "post",
+        success: function(){
+            $("#spanNumCheque_"+recibo+"_"+detalle).text(num_cheque);
+            $("#spanDetalle_"+recibo+"_"+detalle).text(txtdetalle);
+            $("#spanVencimiento_"+recibo+"_"+detalle).text(vencimiento);
+            $("#spanMontoCheque_"+recibo+"_"+detalle).text(monto_cheque);
+            $("#spanNroCuenta_"+recibo+"_"+detalle).text(num_cuenta);
+            $("#spanBanco_"+recibo+"_"+detalle).text(banco);
+
+            let varPesos = 0;
+
+            $(".trDetalle").each(function(){
+                varPesos += parseFloat($(this).find('td:eq(3)').text());
+            });
+
+            var pesos = numeroALetras(varPesos, {
+                plural: "PESOS",
+                singular: "PESO",
+                centPlural: "CENTAVOS",
+                centSingular: "CENTAVO"
+            });
+
+            $("#cantidad").val("$"+number_format(varPesos,0,",",".") + " (" +pesos+ ")" );
+        }
+    })
+})
+
 $(document).on("click",".btnAgregaDetalle",function(){
 
     let monto_cheque_ultimo = $("#txtMontoCheque").data('montoanterior');
-    console.log(monto_cheque_ultimo);
-    console.log($("#txtMontoCheque").val());
+    let montoTotalCheques = 0;
+    let cantMaxCheques = 0;
+    //cheque a agregar = 1
+    let cantCheques = 1;
+    //console.log(monto_cheque_ultimo);
+    //console.log($("#txtMontoCheque").val());
     if(parseFloat(monto_cheque_ultimo) > 0){
         if(parseFloat($("#txtMontoCheque").val()) > parseFloat(monto_cheque_ultimo))
         {
             Swal.fire(
             '¡Error!',
             'El monto del cheque ingresado no puede ser mayor al que fue ingresado anteriormente',
+            'error'
+            )   
+            return;
+        }
+    }
+
+    $(".trDetalle").each(function(){
+        montoTotalCheques += parseFloat($(this).find('td:eq(3)').text());
+        cantCheques++;
+    });
+    //monto total de cheques hasta el momento + el monto del cheque que quiero agregar ahora
+    montoTotalCheques = parseFloat(montoTotalCheques) + parseFloat($("#txtMontoCheque").val());
+
+    //Validación de excepciones
+    if(montoTotalCheques >= 400000 && montoTotalCheques <= 1000000){
+        cantMaxCheques = 10;
+        if(cantCheques > cantMaxCheques){
+            Swal.fire(
+            '¡Error!',
+            'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
+            'error'
+            )   
+            return;
+        }
+    }
+
+    if(montoTotalCheques >= 1000001 && montoTotalCheques <= 3000000){
+        cantMaxCheques = 12;
+        if(cantCheques > cantMaxCheques){
+            Swal.fire(
+            '¡Error!',
+            'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
+            'error'
+            )   
+            return;
+        }
+    }
+
+    if(montoTotalCheques >= 3000001 && montoTotalCheques <= 6000000){
+        cantMaxCheques = 15;
+        if(cantCheques > cantMaxCheques){
+            Swal.fire(
+            '¡Error!',
+            'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
+            'error'
+            )   
+            return;
+        }
+    }
+
+    if(montoTotalCheques >= 6000001 && montoTotalCheques <= 9000000){
+        cantMaxCheques = 20;
+        if(cantCheques > cantMaxCheques){
+            Swal.fire(
+            '¡Error!',
+            'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
+            'error'
+            )   
+            return;
+        }
+    }
+
+    if(montoTotalCheques >= 9000001){
+        cantMaxCheques = 24;
+        if(cantCheques > cantMaxCheques){
+            Swal.fire(
+            '¡Error!',
+            'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
             'error'
             )   
             return;
@@ -246,20 +388,21 @@ $(document).on("click",".btnAgregaDetalle",function(){
             }
             else{
                 let html = "<tr class='trDetalle' data-id='"+data+"'>"+
-                "<td style='width: 125px;'>"+$("#txtNumCheque").val()+"</td>"+
-                "<td style='width: 125px;'>"+$("#txtDetalle").val()+"</td>"+
-                "<td style='width: 125px;'>"+$("#txtVencimiento").val()+"</td>"+
-                "<td style='width: 125px;'>"+$("#txtMontoCheque").val()+"</td>"+
-                "<td style='width: 125px;'>"+$("#txtNroCuenta").val()+"</td>"+
-                "<td style='width: 125px;'>"+$("#txtBanco").val()+"</td>"+
-                "<td style='width: 125px;'><button class='btn btn-danger btnborrarDetalle' data-id='"+data+"'><i class='fa fa-trash'></i></button>"+"</td>"+
+                "<td style='width: 125px;'><span id='spanNumCheque_{{$recibo->id}}_"+data+"' class='txtDetalleRecibo_{{$recibo->id}}_"+data+"'>"+$("#txtNumCheque").val()+"</span> <input style='display:none;width: 125px;' id='txtNumCheque_{{$recibo->id}}_"+data+"' class='inputDetalle_{{$recibo->id}}_"+data+"' type='text' value='"+$("#txtNumCheque").val()+"'></td>"+
+                "<td style='width: 125px;'><span id='spanDetalle_{{$recibo->id}}_"+data+"' class='txtDetalleRecibo_{{$recibo->id}}_"+data+"'>"+$("#txtDetalle").val()+"</span> <input style='display:none;width: 125px;' id='txtDetalle_{{$recibo->id}}_"+data+"' class='inputDetalle_{{$recibo->id}}_"+data+"' type='text' value='"+$("#txtDetalle").val()+"'></td>"+
+                "<td style='width: 125px;'><span id='spanVencimiento_{{$recibo->id}}_"+data+"' class='txtDetalleRecibo_{{$recibo->id}}_"+data+"'>"+$("#txtVencimiento").val()+"</span> <input style='display:none;width: 125px;' id='txtVencimiento_{{$recibo->id}}_"+data+"' class='inputDetalle_{{$recibo->id}}_"+data+" inputEditVencimiento' type='text' value='"+$("#txtVencimiento").val()+"'></td>"+
+                "<td style='width: 125px;'><span id='spanMontoCheque_{{$recibo->id}}_"+data+"' class='txtDetalleRecibo_{{$recibo->id}}_"+data+"'>"+$("#txtMontoCheque").val()+"</span> <input style='display:none;width: 125px;' id='txtMontoCheque_{{$recibo->id}}_"+data+"' class='inputDetalle_{{$recibo->id}}_"+data+"' type='number' value='"+$("#txtMontoCheque").val()+"'></td>"+
+                "<td style='width: 125px;'><span id='spanNroCuenta_{{$recibo->id}}_"+data+"' class='txtDetalleRecibo_{{$recibo->id}}_"+data+"'>"+$("#txtNroCuenta").val()+"</span> <input style='display:none;width: 125px;' id='txtNroCuenta_{{$recibo->id}}_"+data+"' class='inputDetalle_{{$recibo->id}}_"+data+"' type='number' value='"+$("#txtNroCuenta").val()+"'></td>"+
+                "<td style='width: 125px;'><span id='spanBanco_{{$recibo->id}}_"+data+"' class='txtDetalleRecibo_{{$recibo->id}}_"+data+"'>"+$("#txtBanco").val()+"</span> <input style='display:none;width: 125px;' id='txtBanco_{{$recibo->id}}_"+data+"' class='inputDetalle_{{$recibo->id}}_"+data+"' type='text' value='"+$("#txtBanco").val()+"'></td>"+
+                "<td style='width: 125px;'><button class='btn btn-danger btnborrarDetalle' data-id='"+data+"'><i class='fa fa-trash'></i></button> "+"<button class='btn btn-primary btnEditarDetalle' data-detalle='"+data+"' data-recibo='{{$recibo->id}}'><i class='fa fa-pencil'></i></button>"+"</td>"+
                 "</tr>";
+
                 $("#txtNumCheque").val('');
                 $("#txtDetalle").val('');
                 $("#txtVencimiento").val('');
                 $("#txtMontoCheque").attr('data-montoanterior',$("#txtMontoCheque").val());
                 $("#txtMontoCheque").data('montoanterior',$("#txtMontoCheque").val());
-                console.log("nuevo monto: "+$("#txtMontoCheque").data('montoanterior'));
+                //console.log("nuevo monto: "+$("#txtMontoCheque").data('montoanterior'));
                 $("#txtMontoCheque").val('');               
                 //$("#txtNroCuenta").val('');
                 $("#txtBanco").val('');

@@ -29,6 +29,8 @@ Route::get("/recibo/detalleRecibo/{id}", [App\Http\Controllers\ReciboController:
 Route::post("/recibo/detalleRecibo/new", [App\Http\Controllers\ReciboController::class, 'insertarNuevoDetalle'])->name('detalleRecibo.insertar');
 Route::post("/recibo/detalleRecibo/delete",[App\Http\Controllers\ReciboController::class, 'borrarDetalle'])->name('detalleRecibo.borrar');
 Route::post("/recibo/detalleRecibo/generateDoc",[App\Http\Controllers\ReciboController::class, 'generaComprobanteRecibo'])->name("generaComprobanteRecibo");
+Route::post("/recibo/detalleRecibo/edit", [App\Http\Controllers\ReciboController::class, 'editDetalle'])->name('editarDetalleCheque');
+
 Route::get("/recibo/list",[App\Http\Controllers\ReciboController::class, 'list'])->name("listadoRecibos");
 Route::post("/recibo/detalleRecibo/uploadImageDoc",[App\Http\Controllers\ReciboController::class, 'subirArchivoRecepcionado'])->name('subirArchivoRecepcionado');
 
