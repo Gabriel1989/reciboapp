@@ -7,7 +7,7 @@ setlocale(LC_TIME,"es_CL");
         page-break-after: always;
     }
 </style>
-
+<div class="pdf" style="width:600px;">
 <div class="row">
     <div class="col-md-12">
         <img style="width:150px;height:50px;float:left;" src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents($_SERVER['DOCUMENT_ROOT'].'/images/logo.png'))  }}" class="img-responsive" />
@@ -72,7 +72,7 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
             @foreach($detalle_recibo as $detalle)
             <?php $i++; 
             
-            if($i > 26){
+            if($i > 18){
                 $valida_max_detalle = true;
                 break;
             }
@@ -110,11 +110,11 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
         </thead>
         <tbody id="tbody_detalle_recibo">
             <?php  
-            $aux_array = $detalle_recibo->slice(26);
+            $aux_array = $detalle_recibo->slice(18);
             ?>
             @foreach($aux_array as $detalle)
             <?php 
-            if($i > 52){
+            if($i > 36){
                 $valida_max_detalle = true;
                 break;
             }
@@ -133,8 +133,8 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
         </tbody>    
     </table>
 
-    <div style="position:absolute;top:350;left:470;border: 3px solid #000;">
-        <span style="text-align:center;margin-left:15px;font-weight:bold;font-size:20px;">ACOBRO LTDA.</span>
+    <div style="position:absolute;top:550;left:330;border: 3px solid #000;;width:165px;">
+        <span style="text-align:center;margin-left:5px;font-weight:bold;font-size:20px;white-space:nowrap;">ACOBRO LTDA.</span>
         <br>
         <span style="font-size:9px;text-align:center;margin-left:15px;font-weight:bold;">MERCED 280, PISO 6 SANTIAGO</span>
         <br>
@@ -144,12 +144,12 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
     </div>
 
 
-    <div style="float:left;position:absolute;top:700;">
+    <div style="float:left;position:absolute;top:650;">
         
         <img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('http://'.$_SERVER['HTTP_HOST'].'/recibo/detalleRecibo/'.$recibo->id)) }} ">
 
     </div> 
-    <div style="float:right;position: absolute;top:700;">
+    <div style="float:right;position: absolute;top:650;">
         MERCED N° 280, PISO 6
         <br>
         STGO. CENTRO
@@ -160,8 +160,8 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
     </div>
 @else
 
-    <div style="position:absolute;top:350;left:470;border: 3px solid #000;">
-        <span style="text-align:center;margin-left:15px;font-weight:bold;font-size:20px;">ACOBRO LTDA.</span>
+    <div style="position:absolute;top:550;left:330;border: 3px solid #000;width:165px;">
+        <span style="text-align:center;margin-left:5px;font-weight:bold;font-size:20px;white-space:nowrap;">ACOBRO LTDA.</span>
         <br>
         <span style="font-size:9px;text-align:center;margin-left:15px;font-weight:bold;">MERCED 280, PISO 6 SANTIAGO</span>
         <br>
@@ -172,12 +172,12 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
 
 
 
-    <div style="float:left;position:absolute;top:700;">
+    <div style="float:left;position:absolute;top:650;">
         <img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('http://'.$_SERVER['HTTP_HOST'].'/recibo/detalleRecibo/'.$recibo->id)) }} ">
 
     </div>    
 
-    <div style="float:right;position: absolute;top:700;">
+    <div style="float:right;position: absolute;top:650;">
         MERCED N° 280, PISO 6
         <br>
         STGO. CENTRO
@@ -188,7 +188,7 @@ $fecha_spanish = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('
     </div>
 @endif
 
-
+</div>
 
 
 

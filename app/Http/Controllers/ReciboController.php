@@ -108,7 +108,7 @@ class ReciboController extends Controller{
         $html = view('recibos.docrecibo', compact('id_recibo','concepto','cantidad','detalle_recibo','recibo'))->render();
         //return view('recibos.docrecibo', compact('id_recibo', 'concepto', 'cantidad', 'detalle_recibo', 'recibo'));
         $pdf = app('dompdf.wrapper');
-        $pdf->setPaper([0, 0, 860.98, 680.85], 'landscape');
+        $pdf->setPaper([0, 0, 860.98, 560.85], 'landscape');
         $pdf->loadHTML($html);
 
         return $pdf->stream('folio.pdf');
