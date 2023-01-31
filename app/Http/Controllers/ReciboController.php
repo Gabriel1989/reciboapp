@@ -117,7 +117,7 @@ class ReciboController extends Controller{
 
     public function list(){
         $id_menu = 4;
-        $recibos = Recibo::where('user_id',Auth::user()->id)->get();
+        $recibos = Recibo::all();
         
         return view('home')->with('id_menu', $id_menu)->with('recibos',$recibos);
     }

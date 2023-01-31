@@ -15,4 +15,8 @@ class Recibo extends Model{
     public function Acreedor(){
         return $this->belongsTo('App\Models\Acreedor');
     }
+
+    public function Usuario(){
+        return $this->belongsTo('App\Models\User');
+    }
 }

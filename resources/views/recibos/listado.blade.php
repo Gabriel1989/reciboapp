@@ -5,6 +5,7 @@
         <th>N° Folio</th>
         <th>Cliente</th>
         <th>Acreedor</th>
+        <th>Usuario que generó el Recibo</th>
         <th>Concepto</th>
         <th>Fecha de creación</th>
         <th>Fecha de actualización</th>
@@ -19,6 +20,7 @@
                 <td>{{$r->id}}</td>
                 <td>{{$r->Cliente->nombre}}</td>
                 <td>{{$r->Acreedor->nombre}}</td>
+                <td>{{@$r->Usuario->name}} @if(@isset($r->Usuario->email)) ({{@$r->Usuario->email}}) @endif</td>
                 <td>{{$r->concepto}}</td>
                 <td>{{date("d-m-Y H:i:s",strtotime($r->created_at))}}</td>
                 <td>{{date("d-m-Y H:i:s",strtotime($r->updated_at))}}</td>
