@@ -75,6 +75,7 @@ $monto_cheque = 0;
     <?php 
     $nro_cuenta =  $detalle->nro_cuenta; 
     $monto_cheque = $detalle->monto_cheque;
+    $banco = $detalle->banco;
     ?>
     <tr class='trDetalle' id="detalle_recibo_{{$recibo->id}}_{{$detalle->id}}" data-id='<?php echo $detalle->id; ?>'>
         <td style="width: 125px;"><span id="spanNumCheque_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->nro_cheque}}</span> <input style="display:none;width: 125px;" id="txtNumCheque_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="text" value="{{$detalle->nro_cheque}}"></td>
@@ -98,7 +99,7 @@ $monto_cheque = 0;
                 <td><input type="text" id="txtVencimiento" style="width: 125px;"></td>
                 <td><input type="number" id="txtMontoCheque" style="width: 125px;"data-montoanterior="{{$monto_cheque}}"></td>
                 <td><input type="number" id="txtNroCuenta" style="width: 125px;" value="{{$nro_cuenta}}"></td>
-                <td><input type="text" id="txtBanco" style="width: 125px;"></td>
+                <td><input type="text" id="txtBanco" style="width: 125px;" value="{{$banco}}"></td>
                 <td><button class="btn btn-success btnAgregaDetalle"><i class="fa fa-plus"></i></button></td>
             </tr>
         @endif
@@ -304,6 +305,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
     montoTotalCheques = parseFloat(montoTotalCheques) + parseFloat($("#txtMontoCheque").val());
 
     //Validación de excepciones
+    /*
     if(montoTotalCheques >= 400000 && montoTotalCheques <= 1000000){
         cantMaxCheques = 10;
         if(cantCheques > cantMaxCheques){
@@ -363,7 +365,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             return;
         }
     }
-
+    */
 
     $.ajax({
         url: "{{ route('detalleRecibo.insertar') }}",
