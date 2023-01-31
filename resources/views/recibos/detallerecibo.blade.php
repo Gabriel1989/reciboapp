@@ -76,6 +76,7 @@ $monto_cheque = 0;
     $nro_cuenta =  $detalle->nro_cuenta; 
     $monto_cheque = $detalle->monto_cheque;
     $banco = $detalle->banco;
+    $cartera = $detalle->detalle;
     ?>
     <tr class='trDetalle' id="detalle_recibo_{{$recibo->id}}_{{$detalle->id}}" data-id='<?php echo $detalle->id; ?>'>
         <td style="width: 125px;"><span id="spanNumCheque_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->nro_cheque}}</span> <input style="display:none;width: 125px;" id="txtNumCheque_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="text" value="{{$detalle->nro_cheque}}"></td>
@@ -95,7 +96,7 @@ $monto_cheque = 0;
         @if(!$cierra_recibo)
             <tr>
                 <td><input type="text" id="txtNumCheque" style="width: 125px;"></td>
-                <td><input type="text" id="txtDetalle" style="width: 125px;"></td>
+                <td><select id="txtDetalle" style="width: 125px;"><option value="FLUJO" @if($cartera=="FLUJO") selected @endif>FLUJO</option><option value="MASIVA" @if($cartera=="MASIVA") selected @endif>MASIVA</option>  <option value="SALDOS" @if($cartera=="SALDOS") selected @endif>SALDOS</option> </select></td>
                 <td><input type="text" id="txtVencimiento" style="width: 125px;"></td>
                 <td><input type="number" id="txtMontoCheque" style="width: 125px;"data-montoanterior="{{$monto_cheque}}"></td>
                 <td><input type="number" id="txtNroCuenta" style="width: 125px;" value="{{$nro_cuenta}}"></td>
@@ -400,14 +401,14 @@ $(document).on("click",".btnAgregaDetalle",function(){
                 "</tr>";
 
                 $("#txtNumCheque").val('');
-                $("#txtDetalle").val('');
+                //$("#txtDetalle").val('');
                 $("#txtVencimiento").val('');
                 $("#txtMontoCheque").attr('data-montoanterior',$("#txtMontoCheque").val());
                 $("#txtMontoCheque").data('montoanterior',$("#txtMontoCheque").val());
                 //console.log("nuevo monto: "+$("#txtMontoCheque").data('montoanterior'));
                 $("#txtMontoCheque").val('');               
                 //$("#txtNroCuenta").val('');
-                $("#txtBanco").val('');
+                //$("#txtBanco").val('');
 
                 $("#tbody_detalle_recibo").append(html);
 
