@@ -2,7 +2,7 @@
 
 <h4 style="text-align:center;">RECIBO DE DOCUMENTOS</h4>
 
-<?php 
+<?php
 $readonly = '';
 $cierra_recibo = false;
 if(trim($recibo->imagen_recibo) != ""){
@@ -54,6 +54,8 @@ if(trim($recibo->imagen_recibo) != ""){
 <?php
 $nro_cuenta = '';
 $monto_cheque = 0;
+$banco = '';
+$cartera = '';
 ?>
 <!--<div class="row">-->
     <!--<div class="col-md-4">-->
@@ -72,8 +74,8 @@ $monto_cheque = 0;
         <tbody id="tbody_detalle_recibo">
 
     @foreach($detalle_recibo as $detalle)
-    <?php 
-    $nro_cuenta =  $detalle->nro_cuenta; 
+    <?php
+    $nro_cuenta =  $detalle->nro_cuenta;
     $monto_cheque = $detalle->monto_cheque;
     $banco = $detalle->banco;
     $cartera = $detalle->detalle;
@@ -85,12 +87,12 @@ $monto_cheque = 0;
         <td style="width: 125px;"><span id="spanMontoCheque_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->monto_cheque}}</span> <input style="display:none;width: 125px;" id="txtMontoCheque_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="number" value="{{$detalle->monto_cheque}}"></td>
         <td style="width: 125px;"><span id="spanNroCuenta_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->nro_cuenta}}</span> <input style="display:none;width: 125px;" id="txtNroCuenta_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="number" value="{{$detalle->nro_cuenta}}"></td>
         <td style="width: 125px;"><span id="spanBanco_{{$recibo->id}}_{{$detalle->id}}" class="txtDetalleRecibo_{{$recibo->id}}_{{$detalle->id}}">{{$detalle->banco}}</span> <input style="display:none;width: 125px;" id="txtBanco_{{$recibo->id}}_{{$detalle->id}}" class="inputDetalle_{{$recibo->id}}_{{$detalle->id}}" type="text" value="{{$detalle->banco}}"></td>
-        <td style="width: 125px;">@if(!$cierra_recibo) <button class='btn btn-danger btnborrarDetalle' data-id='<?php echo $detalle->id; ?>'><i class='fa fa-trash'></i></button> 
+        <td style="width: 125px;">@if(!$cierra_recibo) <button class='btn btn-danger btnborrarDetalle' data-id='<?php echo $detalle->id; ?>'><i class='fa fa-trash'></i></button>
             <button class="btn btn-primary btnEditarDetalle" data-detalle="{{$detalle->id}}" data-recibo="{{$recibo->id}}"><i class="fa fa-pencil"></i></button> @endif</td>
     </tr>
 
     @endforeach
-        </tbody>    
+        </tbody>
     </table>
     <table style="min-width:902px;">
         @if(!$cierra_recibo)
@@ -105,9 +107,9 @@ $monto_cheque = 0;
             </tr>
         @endif
     </table>
-</div>    
+</div>
     <!--</div>-->
-<!--</div>-->   
+<!--</div>-->
 <br>
 @if(!$cierra_recibo)
 <div class="form-group">
@@ -192,7 +194,7 @@ $(document).on("click",".btnborrarDetalle",function(){
                 $("#txtMontoCheque").attr('data-montoanterior',montoAnterior);
                 $("#txtMontoCheque").data('montoanterior',montoAnterior);
             }
-            
+
 
             var pesos = numeroALetras(varPesos, {
                 plural: "PESOS",
@@ -210,12 +212,12 @@ $(document).on("click",".btnEditarDetalle",function(){
 
     let montoAnterior = 0;
     $(".trDetalle").each(function(){
-                
+
         if(montoAnterior > parseFloat($(this).find('td:eq(3)').text())){
             montoAnterior = parseFloat($(this).find('td:eq(3)').text());
         }
         montoAnterior = parseFloat($(this).find('td:eq(3)').text());
-                
+
     });
     let detalle_id = $(this).data('detalle');
     let recibo_id = $(this).data('recibo');
@@ -293,7 +295,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             '¡Error!',
             'El monto del cheque ingresado no puede ser mayor al que fue ingresado anteriormente',
             'error'
-            )   
+            )
             return;
         }
     }
@@ -314,7 +316,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             '¡Error!',
             'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
             'error'
-            )   
+            )
             return;
         }
     }
@@ -326,7 +328,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             '¡Error!',
             'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
             'error'
-            )   
+            )
             return;
         }
     }
@@ -338,7 +340,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             '¡Error!',
             'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
             'error'
-            )   
+            )
             return;
         }
     }
@@ -350,7 +352,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             '¡Error!',
             'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
             'error'
-            )   
+            )
             return;
         }
     }
@@ -362,7 +364,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
             '¡Error!',
             'Ha sobrepasado el máximo de cheques permitido, debe solicitar una excepción',
             'error'
-            )   
+            )
             return;
         }
     }
@@ -387,7 +389,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
                 '¡Error!',
                 data,
                 'error'
-                )   
+                )
             }
             else{
                 let html = "<tr class='trDetalle' data-id='"+data+"'>"+
@@ -406,7 +408,7 @@ $(document).on("click",".btnAgregaDetalle",function(){
                 $("#txtMontoCheque").attr('data-montoanterior',$("#txtMontoCheque").val());
                 $("#txtMontoCheque").data('montoanterior',$("#txtMontoCheque").val());
                 //console.log("nuevo monto: "+$("#txtMontoCheque").data('montoanterior'));
-                $("#txtMontoCheque").val('');               
+                $("#txtMontoCheque").val('');
                 //$("#txtNroCuenta").val('');
                 //$("#txtBanco").val('');
 
@@ -444,7 +446,7 @@ $(document).on("click",".btnGeneraComprobante",function(){
             '¡Error!',
             'Debe ingresar al menos un registro de pago al recibo',
             'error'
-        )  
+        )
         return;
     }
 
@@ -454,7 +456,7 @@ $(document).on("click",".btnGeneraComprobante",function(){
             '¡Error!',
             'Debe ingresar glosa de concepto para el recibo',
             'error'
-        )  
+        )
         return;
     }
 
@@ -507,14 +509,14 @@ $(document).on("submit","#formDocRecep",function(e){
                     '¡Error!',
                     data,
                     'error'
-                    )   
+                    )
                 }
                 else{
                     Swal.fire(
                     'Listo',
                     'Imagen subida exitosamente',
                     'success'
-                    )  
+                    )
                 }
             }
         });
